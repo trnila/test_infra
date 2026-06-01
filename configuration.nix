@@ -210,7 +210,7 @@
   virtualisation.oci-containers = {
     backend = "podman";
     containers.lunch = {
-      image = "ghcr.io/trnila/assistant:94ee90e7c2383409366653fe8c30ed20c3ae9efc";
+      image = "ghcr.io/trnila/assistant:afffecb8b2a8022805e796c745020f2d86e00a11";
       extraOptions = [
         "--network=host"
       ];
