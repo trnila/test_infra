@@ -5,6 +5,10 @@ on:
         description: Flake input to update
         required: true
         type: string
+      rev:
+        description: Revision to update to (eg. github:user/repo/rev)
+        required: false
+        type: string
 
 jobs:
   update:
@@ -12,7 +16,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: cachix/install-nix-action@v31
-      - run: nix flake update "${{ inputs.input }}"
+      - run: |
+          if [ -n "${{ inputs.rev }}" ]; then
+            nix flake lock --override-input "${{ inputs.input }}" "${{ inputs.rev }}"
+          else
+            nix flake update "${{ inputs.input }}"
+          fi
 
       # setup git for pushing changes
       - uses: actions/create-github-app-token@v3
