@@ -48,5 +48,9 @@ jobs:
         run: |
           git add flake.lock
           git diff --cached --quiet && exit 0
-          git commit -m "flake: update ${{ inputs.input }} ${{ inputs.rev }}"
+          if [ -n "${{ inputs.rev }}" ]; then
+            git commit -m "flake: update ${{ inputs.input }} to ${{ inputs.rev }}"
+          else
+            git commit -m "flake: update ${{ inputs.input }}"
+          fi
           git push
