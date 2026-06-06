@@ -16,15 +16,6 @@ jobs:
   update:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: cachix/install-nix-action@v31
-      - run: |
-          if [ -n "${{ inputs.rev }}" ]; then
-            nix flake lock --override-input "${{ inputs.input }}" "${{ inputs.rev }}"
-          else
-            nix flake update "${{ inputs.input }}"
-          fi
-
       # the same GITHUB_TOKEN wont trigger push workflows
       - uses: actions/create-github-app-token@v3
         id: app-token
@@ -43,6 +34,16 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
 
+      - uses: actions/checkout@v6
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+      - uses: cachix/install-nix-action@v31
+      - run: |
+          if [ -n "${{ inputs.rev }}" ]; then
+            nix flake lock --override-input "${{ inputs.input }}" "${{ inputs.rev }}"
+          else
+            nix flake update "${{ inputs.input }}"
+          fi
       - name: Commit changes
         run: |
           git add flake.lock
